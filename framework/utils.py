@@ -102,14 +102,19 @@ def render_atom_feed(request, title, data):
       language='en'
   )
   for f in data:
+    created = f['created']['when']
     updated = f['updated']['when']
-    pubdate = datetime.datetime.strptime(str(updated[:19]),
+    pubdate = datetime.datetime.strptime(str(created[:19]),
                                          '%Y-%m-%d  %H:%M:%S')
+    update = datetime.datetime.strptime(str(updated[:19]),
+                                        '%Y-%m-%d  %H:%M:%S')
     feed.add_item(
         title=str(f['name']),
+        unique_id=f.get('id'),
         link='%s/%s' % (feature_url_prefix, f.get('id')),
         description=f.get('summary', ''),
         pubdate=pubdate,
+        updateddate=update,
         author_name=str(settings.APP_TITLE),
         categories=[f['category']]
     )
